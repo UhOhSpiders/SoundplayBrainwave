@@ -20,8 +20,6 @@ public:
     PulseController pulseController;
     void init();
     void render();
-    void render2();
-    // void renderTail(Pulse &pulse);
     void clearPixel(int i);
     int getIncrement(int vector);
 };
