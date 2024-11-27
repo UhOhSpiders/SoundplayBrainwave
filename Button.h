@@ -5,10 +5,15 @@ class Button
 {
 public:
     Button(int pin, int vector);
+    int pin;
+    int vector;
+    bool currentState;
+    bool prevState;
+    bool held;
+    Bounce bounce;
+    bool stateHasChanged;
     void init();
     int getPin();
     bool read();
-    int pin;
-    int vector;
-    Bounce bounce;
+    void updateState();
 };
