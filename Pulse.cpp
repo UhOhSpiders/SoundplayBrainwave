@@ -20,44 +20,40 @@ void Pulse::init(int nP, int sL) {
   collision = false;
   prevCollision = false;
   colliding = 0;
+  travelDirection = 0;
 }
 
 void Pulse::trigger(int vct) {
   vector = vct;
   if (vector == 0) {
     position = 0;
-    hold = 1;
-    end = numPixels - hold;
+    travelDirection = 1;
   }
   if (vector == 1) {
     position = numPixels;
-    hold = 1;
-    end = numPixels + hold;
+    travelDirection = -1;
   }
+  hold = 1;
+  end = numPixels + hold * travelDirection;
   active = true;
   seed = random(0, 6);  // generate seed
 }
 
 void Pulse::sustain() {
   hold++;
-  if (vector == 0) {
-    end = position - hold;
-  }
-  if (vector == 1) {
-    end = position + hold;
-  }
+  end = position + hold * travelDirection;
 }
 
 
 void Pulse::detrigger() {
-  if (vector == 0) {
-    hold = position;
-    end = position - hold;
-  }
-  if (vector == 1) {
-    hold = numPixels - position;
-    end = position + hold;
-  }
+  // if (vector == 0) {
+  //   hold = position;
+  //   end = position - hold;
+  // }
+  // if (vector == 1) {
+  //   hold = numPixels - position;
+  //   end = position + hold;
+  // }
 }
 
 
@@ -96,7 +92,6 @@ int Pulse::update() {
         //        noteOffIndexA = index;
         noteOffIndexB = colliding;
       }
-      //      expire();
     }
   }
 

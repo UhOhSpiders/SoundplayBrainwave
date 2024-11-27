@@ -11,23 +11,21 @@ void Strip::update()
         if(!buttons[i].currentState && !buttons[i].stateHasChanged){
             continue;
         }
-        else if (buttons[i].currentState && !buttons[i].held)
+        else if (buttons[i].currentState && buttons[i].stateHasChanged)
         {
             midiController.startNote(i);
-            leds.pulseController.startPulse();
-            Serial.println("button pressed");
+            leds.pulseController.startPulse(buttons[i].vector);
+            Serial.println(buttons[i].vector);
         }
         else if (buttons[i].held)
         {
-            Serial.println("button held");
             leds.pulseController.holdPulse(buttons[i].vector);
         }
         else if (!buttons[i].currentState)
         {
             midiController.stopNote(i);
-            leds.pulseController.releasePulse(buttons[i].vector);
-            Serial.println("button released");
         }
     }
-    // leds.render();
+    leds.pulseController.updatePulses();
+    leds.render();
 }

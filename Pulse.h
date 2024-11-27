@@ -26,6 +26,7 @@ class Pulse {
     bool collision;
     bool prevCollision;
     int colliding;
+    int travelDirection;
 
     void init(int, int);
     void trigger(int);

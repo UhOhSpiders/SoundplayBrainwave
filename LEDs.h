@@ -2,6 +2,7 @@
 #include "PulseController.h"
 #include <Arduino.h>
 #include <WS2812Serial.h>
+#include "Pulse.h"
 #include <tuple>
 
 class LEDs
@@ -19,5 +20,8 @@ public:
     PulseController pulseController;
     void init();
     void render();
-    void clearPixel(WS2812Serial addressableObject, int i);
+    void render2();
+    // void renderTail(Pulse &pulse);
+    void clearPixel(int i);
+    int getIncrement(int vector);
 };

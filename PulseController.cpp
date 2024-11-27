@@ -1,39 +1,46 @@
 #include "PulseController.h"
 #include <Arduino.h>
 
-PulseController::PulseController(int maxPulses):pulses(maxPulses), maxPulses(maxPulses),  currentPulseIndexes{0,0}, nextPulseIndex(0), activeCount(0) {
-    
+PulseController::PulseController(int maxPulses) : pulses(maxPulses), maxPulses(maxPulses), currentPulseIndexes{0, 0}, nextPulseIndex(0), activeCount(0)
+{
 }
 
-void PulseController::createPulses(){
-    for (int i = 0; i < maxPulses ; i++){
-        pulses[i] = Pulse();
-        pulses[i].init(maxPulses, spriteLength);
-    }
+void PulseController::createPulses()
+{
+  for (int i = 0; i < maxPulses; i++)
+  {
+    pulses[i] = Pulse();
+    pulses[i].init(maxPulses, spriteLength);
+  }
 }
 
-void PulseController::startPulse(int vector){
-    nextPulseIndex++;
-    currentPulseIndexes[vector] = nextPulseIndex;
-    pulses[currentPulseIndexes[vector]].trigger(vector);
+void PulseController::startPulse(int vector)
+{
+  nextPulseIndex++;
+  currentPulseIndexes[vector] = nextPulseIndex;
+  pulses[currentPulseIndexes[vector]].trigger(vector);
 }
 
-void PulseController::holdPulse(int vector){
-    pulses[currentPulseIndexes[vector]].sustain();
+void PulseController::holdPulse(int vector)
+{
+  pulses[currentPulseIndexes[vector]].position = pulses[currentPulseIndexes[vector]].position + pulses[currentPulseIndexes[vector]].travelDirection;
+  pulses[currentPulseIndexes[vector]].sustain();
 }
 
-void PulseController::releasePulse(int vector){
-    pulses[currentPulseIndexes[vector]].detrigger();
+void PulseController::releasePulse(int vector)
+{
+  pulses[currentPulseIndexes[vector]].detrigger();
 }
 
-void PulseController::updatePulses(){
+void PulseController::updatePulses()
+{
   activeCount = 0;
   for (int i = 0; i < maxPulses; i++)
   { // step through the pulse object array
     if (pulses[i].active == true)
     { // check for active pulses
       activeCount++;
-      collisionDetect(i);  
+      collisionDetect(i);
       int colliding = pulses[i].update();
       if (colliding != 9999)
       {
@@ -43,9 +50,10 @@ void PulseController::updatePulses(){
   }
 }
 
-void PulseController::collisionDetect(int pulseIndex){
-if (pulses[pulseIndex].vector == 0)
-  {                                  // check for this vector only
+void PulseController::collisionDetect(int pulseIndex)
+{
+  if (pulses[pulseIndex].vector == 0)
+  {                                           // check for this vector only
     int startA = pulses[pulseIndex].position; // get data for this pulse
     int endA = pulses[pulseIndex].end;
     for (int j = 0; j < maxPulses; j++)
@@ -65,7 +73,7 @@ if (pulses[pulseIndex].vector == 0)
               Serial.println("COLLISION DETECTED");
               pulses[pulseIndex].collision = true;            // flag as this pulse colliding
               pulses[pulseIndex].colliding = pulses[j].index; // update pointer to other pulse
-              pulses[j].collision = true;            // flag as other pulse colliding
+              pulses[j].collision = true;                     // flag as other pulse colliding
               pulses[j].colliding = pulses[pulseIndex].index; // update pointer to this pulse
             }
             else
