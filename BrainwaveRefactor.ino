@@ -20,7 +20,7 @@ std::tuple<int, int, int> purple = {128, 0, 128};
 std::tuple<int, int, int> pink = {255, 192, 203};
 
 // leds(data pin, pixels, color1, color2, color3)
-LEDs leds = LEDs(1, 300, magenta, yellow, orange);
+LEDs leds = LEDs(1, 300, magenta, yellow, green);
 // midi(channel1, channel2)
 MidiController midiController = MidiController(1, 2);
 Strip strip1 = Strip(button1, button2, leds, midiController);

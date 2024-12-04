@@ -1,7 +1,7 @@
 #include "Button.h"
 #include <Arduino.h>
 
-Button::Button(int pin, int vector) : pin(pin), vector(vector), currentState(false), prevState(false), held(false), bounce(Bounce(pin, 5)), stateHasChanged(false)
+Button::Button(int pin, int vector) : pin(pin), vector(vector), isPressed(false), prevState(false), bounce(Bounce(pin, 5)), stateHasChanged(false)
 {
     init();
 }
@@ -17,22 +17,20 @@ bool Button::read()
     {
         if (bounce.fallingEdge())
         {
-            currentState = true;
-            held = true;
+            isPressed = true;
         }
         if (bounce.risingEdge())
         {
-            held = false;
-            currentState = false;
+            isPressed = false;
         }
     }
     updateState();
-    return currentState;
+    return isPressed;
 }
 
 void Button::updateState(){
-if(currentState != prevState){
-    prevState = currentState;
+if(isPressed != prevState){
+    prevState = isPressed;
     stateHasChanged = true;
 }else{
     stateHasChanged = false;

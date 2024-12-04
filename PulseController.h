@@ -13,6 +13,7 @@ public:
     void collisionDetect(int);
     void render();
     std::vector<Pulse> pulses;
+    //int pixelValues[pixelCount] getPixelValues();
     const int spriteLength = 7; // Initialize directly
 private:
     int maxPulses;

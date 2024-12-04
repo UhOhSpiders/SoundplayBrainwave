@@ -8,24 +8,22 @@ void Strip::update()
     for (int i = 0; i < 2; i++)
     {
         buttons[i].read();
-        if(!buttons[i].currentState && !buttons[i].stateHasChanged){
+        if(!buttons[i].isPressed && !buttons[i].stateHasChanged){
             continue;
         }
-        else if (buttons[i].currentState && buttons[i].stateHasChanged)
+        else if (buttons[i].isPressed && buttons[i].stateHasChanged)
         {
             midiController.startNote(i);
-            leds.pulseController.startPulse(buttons[i].vector);
-            Serial.println(buttons[i].vector);
+            // pulseAnimator.held[i] = true;
         }
-        else if (buttons[i].held)
+        else if (!buttons[i].isPressed)
         {
-            leds.pulseController.holdPulse(buttons[i].vector);
-        }
-        else if (!buttons[i].currentState)
-        {
+            // pulseAnimator.held[i] = false;
             midiController.stopNote(i);
         }
     }
-    leds.pulseController.updatePulses();
+    // pulseAnimator.update();
+    // renderArray = pulseAnimator.getRenderArray();
+    // leds.render(renderArray)
     leds.render();
 }

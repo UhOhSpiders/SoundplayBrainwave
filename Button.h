@@ -7,9 +7,8 @@ public:
     Button(int pin, int vector);
     int pin;
     int vector;
-    bool currentState;
+    bool isPressed;
     bool prevState;
-    bool held;
     Bounce bounce;
     bool stateHasChanged;
     void init();

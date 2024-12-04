@@ -33,7 +33,7 @@ int LEDs::getIncrement(int vector)
 
 void LEDs::render()
 {
-    // pulseController.updatePulses();
+    pulseController.updatePulses();
     for (int i = 0; i < pixels; i++)
     {
         int red = 0;
@@ -45,27 +45,11 @@ void LEDs::render()
         { // check if sample is active
 
             int sampleDuration = pulseController.pulses[i].hold;
-            int vector = pulseController.pulses[i].vector;       // get vector
+            int vector = pulseController.pulses[i].vector;        // get vector
             bool collision = pulseController.pulses[i].collision; // get collision state
             Pulse collidingPulse = pulseController.pulses[pulseController.pulses[i].colliding];
             for (int d = 0; d < sampleDuration; d++)
             { // print duration
-                if (collision)
-                {
-                    if (pulseController.pulses[i].crossoverZone(d, collidingPulse))
-                    { // check if this pixel is within the
-                      // collision colours? colour3
-                        red = std::get<0>(color3);
-                        green = std::get<1>(color3);
-                        blue = std::get<2>(color3);
-                    }
-                    else
-                    {
-                        red = std::get<0>(color1);
-                        green = std::get<1>(color1);
-                        blue = std::get<2>(color1);
-                    }
-                }
                 int position = pixel - d;
                 addressableObject.setPixel(position, red, green, blue, white);
                 clearPixel(position + sampleDuration + 1); // clear trailing pixel
@@ -102,16 +86,17 @@ void LEDs::render()
         { // check if sample is active
 
             int sampleDuration = pulseController.pulses[i].hold;
-            int vector = pulseController.pulses[i].vector;       // get vector
+            int vector = pulseController.pulses[i].vector;        // get vector
             bool collision = pulseController.pulses[i].collision; // get collision state
             Pulse collidingPulse = pulseController.pulses[pulseController.pulses[i].colliding];
             for (int d = 0; d < sampleDuration; d++)
             { // print duration
                 if (collision)
                 {
-                    if (pulseController.pulses[i].crossoverZone(d, collidingPulse))
+                    if (pulseController.pulses[i].collision)
                     { // check if this pixel is within the
-                      // collision colours? colour3
+                        // collision colours? colour3
+                        Serial.println("collisionnnnn");
                         red = std::get<0>(color3);
                         green = std::get<1>(color3);
                         blue = std::get<2>(color3);
@@ -125,7 +110,7 @@ void LEDs::render()
                 }
                 int position = pixel - d;
                 addressableObject.setPixel(position, red, green, blue, white);
-                clearPixel(position + sampleDuration + 1); // clear trailing pixel
+                clearPixel(position + sampleDuration + 2); // clear trailing pixel
             }
             // print trailing sprite
             int spriteLength = pulseController.spriteLength;
@@ -136,7 +121,7 @@ void LEDs::render()
                 blue = std::get<2>(color2);
                 if (collision)
                 {
-                    if (pulseController.pulses[i].crossoverZone(k + sampleDuration, collidingPulse))
+                    if (pulseController.pulses[i].colliding)
                     { // check if this pixel is within the crossover zone
                         red = std::get<0>(color3);
                         green = std::get<1>(color3);
@@ -152,7 +137,7 @@ void LEDs::render()
                 // set pixel colour based on sprite shape and sample colour values
                 int position = pixel + k + sampleDuration;
                 addressableObject.setPixel(position, red, green, blue, white);
-                clearPixel(position + sampleDuration); // clear trailing pixel
+                clearPixel(position + sampleDuration + 2); // clear trailing pixel
             }
         }
     }
