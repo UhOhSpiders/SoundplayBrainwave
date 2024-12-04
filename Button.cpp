@@ -41,5 +41,4 @@ void Button::init()
 {
     pinMode(pin, INPUT_PULLUP);
     Serial.begin(57600);
-    Serial.println("init runs");
 }

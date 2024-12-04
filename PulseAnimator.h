@@ -5,21 +5,25 @@ class PulseAnimator
 private:
 // should this be the button objects?
     bool held[2];
-    int minPulseLength;
+    int tailBrightnessValues[6];
     int colorIndexes[2];
-    int leftToRightArray[300];
-    int rightToLeftArray[300];
-    int renderArray[300];
+    int tailIndex[2];
+    int leftToRightArray[30][2];
+    int rightToLeftArray[30][2];
+    int renderArray[30][2];
 
 public:
-    PulseAnimator(int pixels);
-    void createBlankRenderArray();
-    void animateArray(int arr[300]);
-    void checkPulseLength(int arr[300]);
-    int arr[300] getRenderArray();
-    int arr[300] flipArray();
-    int arr[300] overlayArrays();
+    PulseAnimator();
+    void toggleHeld(int vector);
+    void init();
+    void createBlankArray(int arr[30][2]);
+    void animateArray(int arr[30][2], int vector);
+    int* getRenderArray();
+    void flipArray(int arr[30][2]);
+    int* overlayArrays(int arr1[30][2],int arr2[30][2]);
     void printRenderArray();
+    int getFadedTailValue(int vector);
+    void resetTailIndex(int vector);
     void update();
 
     // [[colorIndex, brightness],[colorIndex, brightness],[colorIndex, brightness],[colorIndex, brightness]]

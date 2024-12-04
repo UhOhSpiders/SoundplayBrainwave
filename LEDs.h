@@ -1,8 +1,7 @@
 #pragma once
-#include "PulseController.h"
 #include <Arduino.h>
 #include <WS2812Serial.h>
-#include "Pulse.h"
+
 #include <tuple>
 
 class LEDs
@@ -17,7 +16,6 @@ public:
     byte *drawingMemory;
     byte *displayMemory;
     WS2812Serial addressableObject;
-    PulseController pulseController;
     void init();
     void render();
     void clearPixel(int i);

@@ -24,12 +24,23 @@ LEDs leds = LEDs(1, 300, magenta, yellow, green);
 // midi(channel1, channel2)
 MidiController midiController = MidiController(1, 2);
 Strip strip1 = Strip(button1, button2, leds, midiController);
-
+int testCounter = 0;
 void setup()
 {
 }
 
 void loop()
 {
+    testCounter++;
+    if (testCounter == 300)
+    {
+        strip1.pulseAnimator.toggleHeld(1);
+        strip1.pulseAnimator.toggleHeld(0);
+    }
+    if (testCounter == 350){
+        strip1.pulseAnimator.toggleHeld(1);
+        strip1.pulseAnimator.toggleHeld(0);
+    }
     strip1.update();
+    delay(20);
 }
