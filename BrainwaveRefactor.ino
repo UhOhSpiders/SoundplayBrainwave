@@ -42,5 +42,5 @@ void loop()
         strip1.pulseAnimator.toggleHeld(0);
     }
     strip1.update();
-    delay(20);
+    // delay(20);
 }
