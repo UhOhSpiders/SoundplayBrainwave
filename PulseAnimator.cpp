@@ -1,7 +1,7 @@
 #include "PulseAnimator.h"
 #include <Arduino.h>
 
-PulseAnimator::PulseAnimator() : held{false, false}, tailBrightnessValues{9, 8, 7, 4, 2, 0}, colorIndexes{1, 2}, tailIndex{0, 0}
+PulseAnimator::PulseAnimator() : held{false, false}, tailBrightnessValues{10, 8, 7, 4, 2, 0}, colorIndexes{1, 2}, tailIndex{0, 0}
 {
     init();
 }
@@ -10,12 +10,11 @@ void PulseAnimator::init()
 {
     createBlankArray(leftToRightArray);
     createBlankArray(rightToLeftArray);
-    createBlankArray(renderArray);
 }
 
-void PulseAnimator::createBlankArray(int array[30][2])
+void PulseAnimator::createBlankArray(uint8_t array[LEDS][2])
 {
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < LEDS; i++)
     {
         array[i][0] = 0;
         array[i][1] = 0;
@@ -26,49 +25,58 @@ void PulseAnimator::update()
 {
     animateArray(leftToRightArray, 0);
     animateArray(rightToLeftArray, 1);
-    overlayArrays(leftToRightArray, rightToLeftArray);
 }
 
-void PulseAnimator::animateArray(int arr[30][2], int vector)
+void PulseAnimator::animateArray(uint8_t arr[LEDS][2], int vector)
 {
+    // DECIDE ON THE STARTING PIXEL. 
+    // if the button is held, use the appropriate color at full brightness
     if (held[vector])
     {
         arr[0][0] = colorIndexes[vector];
         arr[0][1] = tailBrightnessValues[0];
     }
-    else if (tailIndex[vector] < 6 && !held[vector])
+    // if the button is released and there is still tail left to render, add the next bit of tail
+    else if (tailIndex[vector] < sizeof(tailBrightnessValues) && !held[vector])
     {
         arr[0][0] = colorIndexes[vector];
         arr[0][1] = getFadedTailValue(vector);
     }
+    // if all the tail has been drawn and the button isn't held, leave the starting pixel blank
     else
     {
         arr[0][0] = 0;
         arr[0][1] = 0;
     }
-    for (int i = 29; i > 0; i--)
+    // once the starting pixel has been set, move the rest of the array along 1
+    for (int i = LEDS - 1; i > 0; i--)
     {
         arr[i][0] = arr[i - 1][0];
         arr[i][1] = arr[i - 1][1];
     }
 }
 
-int *PulseAnimator::overlayArrays(int arr[30][2], int arr2[30][2])
+uint8_t  PulseAnimator::getPixelColorIndex(int i)
 {
-    for (int i = 0; i < 30; i++)
-    {
-        renderArray[i][0] = leftToRightArray[i][0] + rightToLeftArray[30 - i - 1][0];
+    // rightToLeftArray[NUMPIXELS - i - 1][0] <- this indexing works backwards through the rtL array, effectively flipping the animation 
+    // up until this point both leftToRightArray & rightToLeftArray have been moving in the same direction with each .update() call
+    // we can then add this flipped rtL value to the leftToRightArray, to get an overlapping effect, and to make the pulses move in opposite directions. A pixel occupied by an active lTR pulse (colorIndex of 1) and rTL pulse (colorIndex of 2) will result in a combined colorIndex of 3.
+    uint8_t colorIndex = leftToRightArray[i][0] + rightToLeftArray[LEDS - i - 1][0];
+    return colorIndex;
+}
 
-        if (renderArray[i][0] == colorIndexes[0] + colorIndexes[1])
+uint8_t  PulseAnimator::getPixelBrightness(int i){
+        uint8_t brightness;
+  // rightToLeftArray[NUMPIXELS - i - 1][0] <- Same flip from getPixelColorIndex happens here. This indexing works backwards through the array, effectively flipping the animation 
+        if (leftToRightArray[i][0] + rightToLeftArray[LEDS - i - 1][0] == colorIndexes[0] + colorIndexes[1])
         {
-            renderArray[i][1] = tailBrightnessValues[0]; // max brightness
+            brightness = tailBrightnessValues[0]; // if ltR and rtL overlap then set brightness to max
         }
         else
         {
-            renderArray[i][1] = leftToRightArray[i][1] + rightToLeftArray[30 - i - 1][1];
+            brightness = leftToRightArray[i][1] + rightToLeftArray[LEDS - i - 1][1]; // if there's no overlap just leave as is
         }
-    }
-    return (int *)renderArray;
+        return brightness;
 }
 
 void PulseAnimator::resetTailIndex(int vector)
@@ -84,39 +92,4 @@ int PulseAnimator::getFadedTailValue(int vector)
 void PulseAnimator::toggleHeld(int vector)
 {
     held[vector] = !held[vector];
-}
-
-void PulseAnimator::printRenderArray()
-{
-    if (held[0])
-    {
-        Serial.print(">");
-    }
-    else
-    {
-        Serial.print("X");
-    }
-    for (int i = 0; i < 30; i++)
-    {
-        Serial.print("[");
-        Serial.print(renderArray[i][0]);
-        Serial.print(", ");
-        Serial.print(renderArray[i][1]);
-        Serial.print("] ");
-    }
-    if (held[1])
-    {
-        Serial.print("<");
-    }
-    else
-    {
-        Serial.print("X");
-    }
-    Serial.println();
-}
-
-int *PulseAnimator::getRenderArray()
-{
-    printRenderArray();
-    return (int *)renderArray;
 }

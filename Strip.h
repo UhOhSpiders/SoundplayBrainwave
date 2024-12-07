@@ -12,7 +12,7 @@ private:
 
 
 public:
-    PulseAnimator pulseAnimator;
+    // PulseAnimator pulseAnimator;
     Strip(Button &button1, Button &button2, LEDs &leds, MidiController midiController);
     void update();
 };

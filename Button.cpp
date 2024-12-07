@@ -6,11 +6,6 @@ Button::Button(int pin, int vector) : pin(pin), vector(vector), isPressed(false)
     init();
 }
 
-int Button::getPin()
-{
-    return pin;
-}
-
 bool Button::read()
 {
     if (bounce.update())

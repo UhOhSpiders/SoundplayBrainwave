@@ -1,4 +1,6 @@
 #pragma once
+#include <Arduino.h>
+#include "Constants.h"
 
 class PulseAnimator
 {
@@ -7,20 +9,17 @@ private:
     int tailBrightnessValues[6];
     int colorIndexes[2];
     int tailIndex[2];
-    int leftToRightArray[30][2];
-    int rightToLeftArray[30][2];
-    int renderArray[30][2];
+    uint8_t leftToRightArray[LEDS][2];
+    uint8_t rightToLeftArray[LEDS][2];
 
 public:
     PulseAnimator();
     void toggleHeld(int vector);
     void init();
-    void createBlankArray(int arr[30][2]);
-    void animateArray(int arr[30][2], int vector);
-    int* getRenderArray();
-    void flipArray(int arr[30][2]);
-    int* overlayArrays(int arr1[30][2],int arr2[30][2]);
-    void printRenderArray();
+    void createBlankArray(uint8_t arr[LEDS][2]);
+    void animateArray(uint8_t arr[LEDS][2], int vector);
+    uint8_t getPixelColorIndex(int i);
+    uint8_t getPixelBrightness(int i);
     int getFadedTailValue(int vector);
     void resetTailIndex(int vector);
     void update();

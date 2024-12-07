@@ -12,7 +12,6 @@ public:
     Bounce bounce;
     bool stateHasChanged;
     void init();
-    int getPin();
     bool read();
     void updateState();
 };
