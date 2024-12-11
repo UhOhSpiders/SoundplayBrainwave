@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-// #include <MIDI.h>
 
 class MidiController
 {

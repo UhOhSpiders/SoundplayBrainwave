@@ -14,13 +14,14 @@ private:
 
 public:
     PulseAnimator();
-    void toggleHeld(int vector);
+    void toggleHeld(int inputIndex);
     void init();
     void createBlankArray(uint8_t arr[LEDS][2]);
-    void animateArray(uint8_t arr[LEDS][2], int vector);
+    void animateArray(uint8_t arr[LEDS][2]);
+    void updateStartingPixel(uint8_t arr[LEDS][2], int stripInputIndex);
     uint8_t getPixelColorIndex(int i);
     uint8_t getPixelBrightness(int i);
-    int getFadedTailValue(int vector);
-    void resetTailIndex(int vector);
+    int getFadedTailValue(int stripInputIndex);
+    void resetTailIndex(int stripInputIndex);
     void update();
 };

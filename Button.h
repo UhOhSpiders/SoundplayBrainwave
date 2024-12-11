@@ -4,9 +4,8 @@
 class Button
 {
 public:
-    Button(int pin, int vector);
+    Button(int pin);
     int pin;
-    int vector;
     bool isPressed;
     bool prevState;
     Bounce bounce;
