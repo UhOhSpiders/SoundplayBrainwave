@@ -13,12 +13,10 @@ bool Button::read()
         if (bounce.fallingEdge())
         {
             isPressed = true;
-            Serial.println("held");
         }
         if (bounce.risingEdge())
         {
             isPressed = false;
-            Serial.println("not held");
         }
     }
     updateState();
