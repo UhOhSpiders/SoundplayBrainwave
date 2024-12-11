@@ -66,5 +66,9 @@
         "utility": "cpp",
         "__tree": "cpp",
         "map": "cpp"
-    }
+    },
+    "cSpell.words": [
+        "colour",
+        "Teensyduino"
+    ]
 }
