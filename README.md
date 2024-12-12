@@ -23,7 +23,7 @@ The logic is separated into classes.
             
             Their starting pixels are then calculated based on the state of the user inputs with `.updateStartingPixel()`. This function continues to add to the length of the pulse if the button is held, adds a tail onto the end if the button is released, or simply adds a blank pixel if there is no tail left to draw.
 
-            Finally, the index of the desired pixel colour is returned as `leftToRightArray[i][0] + rightToLeftArray[LEDCOUNT - i - 1]`. This line creates the overlapping effect and **_flips_** `rightToLeftArray` to create the contrary motion. The `LEDS` object can then use this value to index its array of given colours and set the pixel accordingly. 
+            Finally, the index of the desired pixel colour is returned as `leftToRightArray[i][0] + rightToLeftArray[LEDCOUNT - i - 1][0]`. This line creates the overlapping effect and **_flips_** `rightToLeftArray` to create the contrary motion. The `LEDS` object can then use this value to index its array of given colours and set the pixel accordingly. 
 
 ## Libraries 
 
