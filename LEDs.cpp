@@ -3,7 +3,6 @@
 #include <WS2812Serial.h>
 #include "Constants.h"
 
-// LEDs::LEDs(int pin, int color0[3], int color1[3], int color2[3], int color3[3]) : pin(pin), drawingMemory(new byte[LEDS * 3]), displayMemory(new byte[LEDS * 12]), addressableObject(LEDS, displayMemory, drawingMemory, pin, WS2812_GRB)
 LEDs::LEDs(int pin, int color0[3], int color1[3], int color2[3], int color3[3], WS2812Serial addressableObject) : pin(pin), addressableObject(addressableObject)
 {
     for (int i = 0; i < 3; i++)
