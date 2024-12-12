@@ -26,7 +26,7 @@ void LEDs::init()
 void LEDs::render()
 {
     pulseAnimator.update();
-    for (int i = 0; i < LEDS; i++)
+    for (int i = 0; i < LEDCOUNT; i++)
     {
         int colorIndex = pulseAnimator.getPixelColorIndex(i);
         int *color = colors[colorIndex];

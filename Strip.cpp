@@ -25,5 +25,4 @@ void Strip::update()
         }
     }
     leds.render();
-    // Serial.println();
 }

@@ -1,3 +1,4 @@
 #pragma once
 
-#define LEDS 300
+// number of LEDs in the LED strip
+#define LEDCOUNT 300

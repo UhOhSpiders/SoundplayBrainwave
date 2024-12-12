@@ -22,21 +22,25 @@ int purple[3] = {128, 0, 128};
 int pink[3] = {255, 192, 203};
 
 
-byte drawingMemory[LEDS*3];         //  3 bytes per LED
-DMAMEM byte displayMemory[LEDS*12]; // 12 bytes per LED
+byte drawingMemory[LEDCOUNT*3];         //  3 bytes per LED
+DMAMEM byte displayMemory[LEDCOUNT*12]; // 12 bytes per LED
 
-WS2812Serial ledsObject1(LEDS, displayMemory, drawingMemory, 1, WS2812_GRB);
+WS2812Serial ledsObject1(LEDCOUNT, displayMemory, drawingMemory, 1, WS2812_GRB);
 
-byte drawingMemory2[LEDS*3];         //  3 bytes per LED
-DMAMEM byte displayMemory2[LEDS*12]; // 12 bytes per LED
+byte drawingMemory2[LEDCOUNT*3];         //  3 bytes per LED
+DMAMEM byte displayMemory2[LEDCOUNT*12]; // 12 bytes per LED
 
-WS2812Serial ledsObject2(LEDS, displayMemory2, drawingMemory2, 8, WS2812_GRB);
+WS2812Serial ledsObject2(LEDCOUNT, displayMemory2, drawingMemory2, 8, WS2812_GRB);
 
+// CHOOSE COLOURS HERE. (dataPin, offColor, leftToRightPulseColor, rightToLeftPulseColor, overlapColor, addressable WS2812Serial object)
+// choose from presets above or make your own in a matching format 
 LEDs leds = LEDs(1, off, red, magenta, pink, ledsObject1);
 LEDs leds2 = LEDs(8, off, purple, blue, cyan, ledsObject2);
 
 MidiController midiController = MidiController(1, 2);
 MidiController midiController2 = MidiController(3, 4);
+
+// the individual components are then assigned to each "strip" here
 Strip strip1 = Strip(button1, button2, leds, midiController);
 Strip strip2 = Strip(button3, button4, leds2, midiController2);
 

@@ -12,9 +12,9 @@ void PulseAnimator::init()
     createBlankArray(rightToLeftArray);
 }
 
-void PulseAnimator::createBlankArray(uint8_t array[LEDS][2])
+void PulseAnimator::createBlankArray(uint8_t array[LEDCOUNT][2])
 {
-    for (int i = 0; i < LEDS; i++)
+    for (int i = 0; i < LEDCOUNT; i++)
     {
         array[i][0] = 0;
         array[i][1] = 0;
@@ -29,7 +29,7 @@ void PulseAnimator::update()
     updateStartingPixel(rightToLeftArray,1);
 }
 
-void PulseAnimator::animateArray(uint8_t arr[LEDS][2])
+void PulseAnimator::animateArray(uint8_t arr[LEDCOUNT][2])
 {
     // move everything in the array along 1
     for (int i = LEDS - 1; i > 0; i--)
@@ -39,7 +39,7 @@ void PulseAnimator::animateArray(uint8_t arr[LEDS][2])
     }
 }
 
-void PulseAnimator::updateStartingPixel(uint8_t arr[LEDS][2], int stripInputIndex){
+void PulseAnimator::updateStartingPixel(uint8_t arr[LEDCOUNT][2], int stripInputIndex){
     // if the button/input is held, use the appropriate color (based on stripInputIndex) at full brightness
     if (held[stripInputIndex])
     {
@@ -63,9 +63,9 @@ void PulseAnimator::updateStartingPixel(uint8_t arr[LEDS][2], int stripInputInde
 uint8_t PulseAnimator::getPixelColorIndex(int i)
 {
     // rightToLeftArray[NUMPIXELS - i - 1][0] <- this indexing works backwards through the rtL array, effectively flipping the animation
-    // up until this point animateArray() has been moving both leftToRightArray & rightToLeftArray in the same direction with each .update() call
+    // up until this point .animateArray() has been moving both leftToRightArray & rightToLeftArray in the same direction with each .update() call
     // We can add this flipped rtL value to the leftToRightArray to get an overlapping effect, and to make the pulses move in opposite directions. eg a pixel occupied by an active lTR pulse (colorIndex of 1) and rTL pulse (colorIndex of 2) will result in a combined colorIndex of 3.
-    uint8_t colorIndex = leftToRightArray[i][0] + rightToLeftArray[LEDS - i - 1][0];
+    uint8_t colorIndex = leftToRightArray[i][0] + rightToLeftArray[LEDCOUNT - i - 1][0];
     return colorIndex;
 }
 
@@ -73,13 +73,13 @@ uint8_t PulseAnimator::getPixelBrightness(int i)
 {
     uint8_t brightness;
     // rightToLeftArray[NUMPIXELS - i - 1][0] <- Same flip from getPixelColorIndex happens here. This indexing works backwards through the array, effectively flipping the animation
-    if (leftToRightArray[i][0] + rightToLeftArray[LEDS - i - 1][0] == colorIndexes[0] + colorIndexes[1])
+    if (leftToRightArray[i][0] + rightToLeftArray[LEDCOUNT - i - 1][0] == colorIndexes[0] + colorIndexes[1])
     {
         brightness = tailBrightnessValues[0]; // if ltR and rtL overlap then set brightness to max
     }
     else
     {
-        brightness = leftToRightArray[i][1] + rightToLeftArray[LEDS - i - 1][1]; // if there's no overlap just leave as is
+        brightness = leftToRightArray[i][1] + rightToLeftArray[LEDCOUNT - i - 1][1]; // if there's no overlap just leave as is
     }
     return brightness;
 }
