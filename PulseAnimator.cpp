@@ -32,7 +32,7 @@ void PulseAnimator::update()
 void PulseAnimator::animateArray(uint8_t arr[LEDCOUNT][2])
 {
     // move everything in the array along 1
-    for (int i = LEDS - 1; i > 0; i--)
+    for (int i = LEDCOUNT - 1; i > 0; i--)
     {
         arr[i][0] = arr[i - 1][0];
         arr[i][1] = arr[i - 1][1];
