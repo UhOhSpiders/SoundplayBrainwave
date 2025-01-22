@@ -3,7 +3,11 @@
 #include <WS2812Serial.h>
 #include "Constants.h"
 
-LEDs::LEDs(int pin, int color0[3], int color1[3], int color2[3], int color3[3], WS2812Serial addressableObject) : pin(pin), addressableObject(addressableObject)
+LEDs::LEDs(int pin, int color0[3], int color1[3], int color2[3], int color3[3], byte *drawingMem, byte *displayMem, Animator *animator)
+    : drawingMemory(drawingMem),
+      displayMemory(displayMem),
+      addressableObject(LEDCOUNT, displayMemory, drawingMemory, pin, WS2812_GRB),
+      animator(animator)
 {
     for (int i = 0; i < 3; i++)
     {
@@ -13,6 +17,7 @@ LEDs::LEDs(int pin, int color0[3], int color1[3], int color2[3], int color3[3], 
         colors[3][i] = color3[i];
     }
     init();
+    
 }
 
 void LEDs::init()
@@ -24,19 +29,19 @@ void LEDs::init()
 
 void LEDs::render()
 {
-    pulseAnimator.update();
+    animator->update();
     for (int i = 0; i < LEDCOUNT; i++)
     {
-        int colorIndex = pulseAnimator.getPixelColorIndex(i);
+        int colorIndex = animator->getPixelColorIndex(i);
         int *color = colors[colorIndex];
-        int brightness = pulseAnimator.getPixelBrightness(i);
+        int brightness = animator->getPixelBrightness(i);
         int scaledRed = (color[0] * brightness) / 10;
         int scaledGreen = (color[1] * brightness) / 10;
         int scaledBlue = (color[2] * brightness) / 10;
 
         addressableObject.setPixel(i, scaledRed, scaledGreen, scaledBlue);
         // print every 5th colorIndex for easier reading in the serial monitor
-        if (i % 5 == 0)
+        if (i % 2 == 0)
         {
             Serial.print(colorIndex);
         }

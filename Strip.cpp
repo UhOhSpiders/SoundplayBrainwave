@@ -15,13 +15,12 @@ void Strip::update()
         else if (buttons[i].isPressed && buttons[i].stateHasChanged)
         {
             midiController.startNote(i);
-            leds.pulseAnimator.resetTailIndex(i);
-            leds.pulseAnimator.toggleHeld(i);
+            leds.animator->toggleHeld(i);
         }
         else if (!buttons[i].isPressed)
         {
-            leds.pulseAnimator.toggleHeld(i);
             midiController.stopNote(i);
+            leds.animator->toggleHeld(i);
         }
     }
     leds.render();
