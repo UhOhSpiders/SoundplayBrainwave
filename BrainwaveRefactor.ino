@@ -53,6 +53,6 @@ void loop()
     // turn board LED on for troubleshooting purposes
     digitalWrite(13, HIGH);
     // update the strips instantiated above
-    // strip1.update();
+    strip1.update();
     strip2.update();
 }

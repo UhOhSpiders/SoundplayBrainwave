@@ -125,5 +125,5 @@ uint8_t SpringAnimator::getPixelBrightness(int i)
 
 uint8_t SpringAnimator::getPixelColorIndex(int i)
 {
-    return renderArray[0][i];
+    return 1;
 }
