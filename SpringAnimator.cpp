@@ -2,7 +2,7 @@
 #include "SpringAnimator.h"
 #include <cmath>
 
-SpringAnimator::SpringAnimator() : position(0), velocity(0), acceleration(0), mass(1), releaseForce(0), gravity(-3), yoyo(-25), yoyoToggle(false), damping(0), height(30), MAXHEIGHT(30)
+SpringAnimator::SpringAnimator() : position(0), velocity(0), acceleration(0), mass(100), releaseForce(0), gravity(-5), yoyo(-10), yoyoToggle(false), damping(0), height(30), MAXHEIGHT(30), MAXFORCE(35)
 {
     init();
 }
@@ -22,23 +22,21 @@ void SpringAnimator::update()
     {
         compress();
     }
-    if (!held[0])
+    else
     {
-        // if (yoyoToggle)
-        // {
-        //     applyForce(yoyo);
-        // }
+        if (yoyoToggle)
+        {
+            applyForce(yoyo);
+        }
         decompress();
         applyForce(releaseForce);
         if (position > 1)
         {
-
-            applyForce(gravity);
+        applyForce(gravity);
         }
         move();
     }
-    // Serial.println(releaseForce);
-    // Serial.println();
+
     updateRenderArray();
 }
 
@@ -59,15 +57,14 @@ void SpringAnimator::boostIfTapped()
 {
     if (releaseForce < 2)
     {
-        releaseForce = 10;
+        releaseForce = MAXFORCE / 2;
     }
 }
 
 void SpringAnimator::compress()
 {
-    // boostIfTapped();
-    // add min height
-    if (releaseForce < 15)
+    boostIfTapped();
+    if (releaseForce < MAXFORCE)
     {
         releaseForce += 1;
     }
@@ -96,14 +93,14 @@ void SpringAnimator::checkEdges()
     if (position < 0)
     {
         position = 0;
-        releaseForce *= -1;
+        // this breaks the edge detection
+        velocity *= -0.8;
         yoyoToggle = false;
     }
     else if (position > LEDCOUNT - height)
     {
         position = LEDCOUNT - height;
-        releaseForce *= -1;
-        Serial.println("bounce");
+        velocity *= -0.8;
     }
 }
 
@@ -112,7 +109,6 @@ void SpringAnimator::updateRenderArray()
     createBlankArray(renderArray);
     for (int i = 0; i < height; i++)
     {
-        // add range check and round down the floats
         int roundedPosition = round(position);
         renderArray[0][roundedPosition + i] = 1;
     }
@@ -120,10 +116,10 @@ void SpringAnimator::updateRenderArray()
 
 uint8_t SpringAnimator::getPixelBrightness(int i)
 {
-    return renderArray[1][i];
+    return 10;
 }
 
 uint8_t SpringAnimator::getPixelColorIndex(int i)
 {
-    return 1;
+    return renderArray[0][i];
 }

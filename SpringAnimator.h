@@ -23,6 +23,7 @@ private:
     float yoyo;
     bool yoyoToggle;
     int MAXHEIGHT;
+    int MAXFORCE;
     int height;
     void move();
     void applyForce(float force);

@@ -41,11 +41,11 @@ void LEDs::render()
 
         addressableObject.setPixel(i, scaledRed, scaledGreen, scaledBlue);
         // print every 5th colorIndex for easier reading in the serial monitor
-        if (i % 2 == 0)
-        {
-            Serial.print(colorIndex);
-        }
+        // if (i % 2 == 0)
+        // {
+        //     Serial.print(colorIndex);
+        // }
     }
     addressableObject.show();
-    Serial.println();
+    // Serial.println();
 }
