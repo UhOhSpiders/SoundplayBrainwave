@@ -7,6 +7,8 @@ class Animator
 private:
 public:
     Animator();
+    uint8_t rightToLeftArray[LEDCOUNT][2];
+    uint8_t leftToRightArray[LEDCOUNT][2];
     bool held[2];
     virtual void init() = 0;
     virtual void update() = 0;

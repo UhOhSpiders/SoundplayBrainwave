@@ -35,17 +35,20 @@ void LEDs::render()
         int colorIndex = animator->getPixelColorIndex(i);
         int *color = colors[colorIndex];
         int brightness = animator->getPixelBrightness(i);
-        int scaledRed = (color[0] * brightness) / 10;
-        int scaledGreen = (color[1] * brightness) / 10;
-        int scaledBlue = (color[2] * brightness) / 10;
+        // int scaledRed = (color[0] * brightness) / 10;
+        // int scaledGreen = (color[1] * brightness) / 10;
+        // int scaledBlue = (color[2] * brightness) / 10;
+        int scaledRed = color[0];
+        int scaledGreen = color[1];
+        int scaledBlue = color[2];
 
         addressableObject.setPixel(i, scaledRed, scaledGreen, scaledBlue);
         // print every 5th colorIndex for easier reading in the serial monitor
-        // if (i % 2 == 0)
-        // {
-        //     Serial.print(colorIndex);
-        // }
+        if (i % 2 == 0)
+        {
+            Serial.print(colorIndex);
+        }
     }
     addressableObject.show();
-    // Serial.println();
+    Serial.println();
 }
