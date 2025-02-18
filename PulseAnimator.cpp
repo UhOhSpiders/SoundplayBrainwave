@@ -1,7 +1,7 @@
 #include "PulseAnimator.h"
 #include <Arduino.h>
 
-PulseAnimator::PulseAnimator() : held{false, false}, tailBrightnessValues{10, 2, 2, 2, 2, 1}, colorIndexes{1, 2}, tailIndex{0, 0}
+PulseAnimator::PulseAnimator() : tailBrightnessValues{10, 2, 2, 2, 2, 1}, colorIndexes{1, 2}, tailIndex{0, 0}
 {
     init();
 }
@@ -12,14 +12,7 @@ void PulseAnimator::init()
     createBlankArray(rightToLeftArray);
 }
 
-void PulseAnimator::createBlankArray(uint8_t array[LEDCOUNT][2])
-{
-    for (int i = 0; i < LEDCOUNT; i++)
-    {
-        array[i][0] = 0;
-        array[i][1] = 0;
-    }
-}
+
 
 void PulseAnimator::update()
 {
@@ -94,7 +87,7 @@ int PulseAnimator::getFadedTailValue(int stripInputIndex)
     return tailBrightnessValues[tailIndex[stripInputIndex]++];
 };
 
-void PulseAnimator::toggleHeld(int stripInputIndex)
-{
-    held[stripInputIndex] = !held[stripInputIndex];
-}
+// void PulseAnimator::toggleHeld(int stripInputIndex)
+// {
+//     held[stripInputIndex] = !held[stripInputIndex];
+// }

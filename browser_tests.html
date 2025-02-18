@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spring Animator</title>
+  <style>
+    #leds {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div id="leds"></div>
+  <script>
+    class SpringAnimator {
+      constructor() {
+        this.position = 0;
+        this.velocity = 0;
+        this.acceleration = 0;
+        this.mass = 1;
+        this.releaseForce = 0;
+        this.gravity = -5;
+        this.yoyo = -25;
+        this.yoyoToggle = false;
+        this.damping = 0; 
+        this.height = 30;
+        this.MAXHEIGHT = this.height;
+        this.held = false;
+        this.LEDCOUNT = 300;
+        this.renderArray = Array(this.LEDCOUNT).fill(0);
+        this.init();
+      }
+    
+      init() {
+        document.addEventListener("keydown", () => {
+          this.held = true;
+        });
+
+        document.addEventListener("keyup", () => {
+          this.held = false;
+        });
+
+        this.createBlankArray();
+      }
+
+      createBlankArray() {
+        this.renderArray = Array(this.LEDCOUNT).fill(0);
+      }
+
+      update() {
+        // add reset check if 
+        if(this.held && this.position > 1){
+        this.yoyoToggle = true;
+        }
+        if (this.held && this.position < 1) {
+          this.compress();
+        } else {
+          this.decompress();
+          this.yoyoToggle ? this.applyForce(this.yoyo) : null;
+          this.applyForce(this.releaseForce);
+          this.applyForce(this.gravity);
+          if(this.checkForApex()){
+            //apply extra push down force here?
+          }
+          this.move();
+        }
+        this.updateRenderArray();
+      }
+
+      applyForce(force) {
+        this.acceleration += force / this.mass;
+      }
+
+      move() {
+        this.velocity += this.acceleration;
+        this.position += this.velocity;
+        this.checkEdges();
+        this.acceleration = 0;
+      }
+
+      checkForApex(){
+        //check by comparing prev position to current position ?
+        // if current position < prev position then return true
+        let releaseForceRounded = Math.round(this.releaseForce)
+        if(releaseForceRounded + this.gravity == 0){
+            console.log("apex")
+        }
+        return false
+      }
+
+      boostIfTapped(){
+          if(this.releaseForce < 2){
+            this.releaseForce = 10
+        }
+      }
+
+      compress() {
+        this.boostIfTapped()
+        this.height = Math.max(3, this.height - 1); 
+        if (this.releaseForce < 30) {
+          this.releaseForce += 1;
+        }
+      }
+
+
+      decompress() {
+        if (this.releaseForce > 0) {
+          this.releaseForce -= 0.8; 
+        }
+        if (this.height < this.MAXHEIGHT) {
+          this.height += 4;
+        }
+      }
+
+      checkEdges() {
+        if (this.position < 0) {
+          this.position = 0; 
+          this.releaseForce *= -1.3;
+          this.yoyoToggle = false;
+        }
+        if (this.position > this.LEDCOUNT - this.height) {
+          this.position = this.LEDCOUNT - this.height; 
+          this.releaseForce *= -1;
+        }
+      }
+
+      updateRenderArray() {
+        this.createBlankArray();
+        for (let i = 0; i < this.height; i++) {
+          const index = Math.round(this.position) + i;
+          if (index >= 0 && index < this.LEDCOUNT) {
+            this.renderArray[index] = 1;
+          }
+        }
+      }
+
+      render() {
+        const container = document.getElementById("leds");
+        container.innerHTML = this.renderArray
+          .map(val => `<span style="color:${val ? 'red' : 'black'};">●</span>`)
+          .join("");
+      }
+    }
+
+    const animator = new SpringAnimator();
+
+    setInterval(() => {
+      animator.update();
+      animator.render();
+    }, 100);
+  </script>
+</body>
+</html>

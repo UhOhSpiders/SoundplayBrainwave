@@ -3,7 +3,9 @@
 #include "LEDs.h"
 #include "MidiController.h"
 #include "Constants.h"
-#include <WS2812Serial.h>
+#include "Animator.h"
+#include "PulseAnimator.h"
+#include "SpringAnimator.h"
 
 Button button1 = Button(16);
 Button button2 = Button(17);
@@ -21,21 +23,17 @@ int orange[3] = {255, 165, 0};
 int purple[3] = {128, 0, 128};
 int pink[3] = {255, 192, 203};
 
+// this memory needs to be declared globally (in this .ino file) and then passed to the LEDs objects below
+byte drawingMemory[LEDCOUNT * 3];         //  3 bytes per LED
+DMAMEM byte displayMemory[LEDCOUNT * 12]; // 12 bytes per LED
 
-byte drawingMemory[LEDCOUNT*3];         //  3 bytes per LED
-DMAMEM byte displayMemory[LEDCOUNT*12]; // 12 bytes per LED
+byte drawingMemory2[LEDCOUNT * 3];         //  3 bytes per LED
+DMAMEM byte displayMemory2[LEDCOUNT * 12]; // 12 bytes per LED
 
-WS2812Serial ledsObject1(LEDCOUNT, displayMemory, drawingMemory, 1, WS2812_GRB);
-
-byte drawingMemory2[LEDCOUNT*3];         //  3 bytes per LED
-DMAMEM byte displayMemory2[LEDCOUNT*12]; // 12 bytes per LED
-
-WS2812Serial ledsObject2(LEDCOUNT, displayMemory2, drawingMemory2, 8, WS2812_GRB);
-
-// CHOOSE COLOURS HERE. (dataPin, offColor, leftToRightPulseColor, rightToLeftPulseColor, overlapColor, addressable WS2812Serial object)
-// choose from presets above or make your own in a matching format 
-LEDs leds = LEDs(1, off, red, magenta, pink, ledsObject1);
-LEDs leds2 = LEDs(8, off, purple, blue, cyan, ledsObject2);
+// CHOOSE COLOURS HERE. (dataPin, offColor, leftToRightPulseColor, rightToLeftPulseColor, overlapColor, drawingMemory, displayMemory, animator)
+// choose from presets above or make your own in a matching format
+LEDs leds = LEDs(1, off, red, magenta, pink, drawingMemory, displayMemory, new PulseAnimator());
+LEDs leds2 = LEDs(8, off, purple, blue, cyan, drawingMemory2, displayMemory2, new SpringAnimator());
 
 MidiController midiController = MidiController(1, 2);
 MidiController midiController2 = MidiController(3, 4);
@@ -55,6 +53,6 @@ void loop()
     // turn board LED on for troubleshooting purposes
     digitalWrite(13, HIGH);
     // update the strips instantiated above
-    strip1.update();
+    // strip1.update();
     strip2.update();
 }
