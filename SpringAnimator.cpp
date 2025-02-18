@@ -2,7 +2,7 @@
 #include "SpringAnimator.h"
 #include <cmath>
 
-SpringAnimator::SpringAnimator() : mass(100), gravity(-5), yoyo(-10), damping(0), MAXHEIGHT(30), MAXFORCE(36)
+SpringAnimator::SpringAnimator()
 {
     init();
 }
@@ -23,15 +23,13 @@ void SpringAnimator::initSpring(Spring &spring, int colorIndex)
     spring.velocity = 0;
     spring.yoyoToggle = false;
     spring.colorIndex = colorIndex;
-    createBlankArray(spring.renderArray);
 }
 
 void SpringAnimator::update()
 {
     animateSpring(spring1, 0);
     animateSpring(spring2, 1);
-    updateArray(spring1);
-    updateArray(spring2);
+    updateArray(renderArray);
 }
 
 void SpringAnimator::animateSpring(Spring &spring, int inputIndex)
@@ -48,13 +46,13 @@ void SpringAnimator::animateSpring(Spring &spring, int inputIndex)
     {
         if (spring.yoyoToggle)
         {
-            applyForce(spring, yoyo);
+            applyForce(spring, SPRING_YOYO_FORCE);
         }
         decompress(spring);
         applyForce(spring, spring.releaseForce);
         if (spring.position > 1)
         {
-            applyForce(spring, gravity);
+            applyForce(spring, SPRING_GRAVITY);
         }
         move(spring);
     }
@@ -62,7 +60,7 @@ void SpringAnimator::animateSpring(Spring &spring, int inputIndex)
 
 void SpringAnimator::applyForce(Spring &spring, float force)
 {
-    spring.acceleration += force / mass;
+    spring.acceleration += force / SPRING_MASS;
 }
 
 void SpringAnimator::move(Spring &spring)
@@ -77,14 +75,14 @@ void SpringAnimator::boostIfTapped(Spring &spring)
 {
     if (spring.releaseForce < 2)
     {
-        spring.releaseForce = MAXFORCE / 2;
+        spring.releaseForce = SPRING_MAX_FORCE / 2;
     }
 }
 
 void SpringAnimator::compress(Spring &spring)
 {
     boostIfTapped(spring);
-    if (spring.releaseForce < MAXFORCE)
+    if (spring.releaseForce < SPRING_MAX_FORCE)
     {
         spring.releaseForce += 1;
     }
@@ -102,7 +100,7 @@ void SpringAnimator::decompress(Spring &spring)
     {
         spring.releaseForce = 0;
     }
-    if (spring.height < MAXHEIGHT)
+    if (spring.height < SPRING_MAX_HEIGHT)
     {
         spring.height += 4;
     }
@@ -120,19 +118,23 @@ void SpringAnimator::checkEdges(Spring &spring)
     {
         spring.position = LEDCOUNT - spring.height;
         spring.velocity *= -0.8;
-        Serial.println("bounce");
-        Serial.println(spring.position);
     }
 }
 
-void SpringAnimator::updateArray(Spring &spring)
+void SpringAnimator::updateArray(uint8_t renderArray[LEDCOUNT][2])
 {
-    createBlankArray(spring.renderArray);
-    for (int i = 0; i < spring.height; i++)
+    createBlankArray(renderArray);
+    for (int i = 0; i < spring1.height; i++)
     {   
-        int roundedPostion = round(spring.position);
-        spring.renderArray[roundedPostion + i][0] = spring.colorIndex;
-        spring.renderArray[roundedPostion + i][1] = 10;
+        int roundedPostion = round(spring1.position);
+        renderArray[roundedPostion + i][0] = spring1.colorIndex;
+        renderArray[roundedPostion + i][1] = 10;
+    }
+    for (int j = 0; j < spring2.height; j++)
+    {   
+        int roundedPostion = round(spring2.position);
+        renderArray[roundedPostion + j][0] += spring2.colorIndex;
+        renderArray[roundedPostion + j][1] = 10;
     }
 }
 
@@ -143,5 +145,5 @@ uint8_t SpringAnimator::getPixelBrightness(int i)
 
 uint8_t SpringAnimator::getPixelColorIndex(int i)
 {
-    return spring1.renderArray[i][0] + spring2.renderArray[i][0];
+    return renderArray[i][0];
 }

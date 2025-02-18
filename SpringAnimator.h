@@ -11,7 +11,6 @@ struct Spring {
     bool yoyoToggle;
     int height;
     int colorIndex;
-    uint8_t renderArray[LEDCOUNT][2];
 };
 
 class SpringAnimator : public Animator
@@ -26,14 +25,6 @@ private:
     uint8_t renderArray[LEDCOUNT][2];
     Spring spring1;
     Spring spring2;
-    // CONSTANTS
-    float mass;
-    float gravity;
-    float damping;
-    float yoyo;
-    int MAXHEIGHT;
-    int MAXFORCE;
-
     void initSpring(Spring &spring, int colorIndex);
     void animateSpring(Spring &spring, int inputIndex);
     void move(Spring &spring);
@@ -42,6 +33,5 @@ private:
     void compress(Spring &spring);
     void decompress(Spring &spring);
     void checkEdges(Spring &spring);
-
-    void updateArray(Spring &spring);
+    void updateArray(uint8_t renderArray[LEDCOUNT][2]);
 };
