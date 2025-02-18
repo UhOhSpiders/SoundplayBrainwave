@@ -16,14 +16,12 @@ The logic is separated into classes.
 
     - **`MidiController`** only needs to play one note to trigger an external Pure Data synth. Each `Button` plays on a different channel.
 
-    - **`LEDS`** sends data to the LED strip and renders the animation based on the user inputs. The animation logic itself is factored out into a `PulseController` class, which is described in further detail below. The `.render()` method loops through each pixel, and uses the `PulseController`'s `.getPixelColorIndex(<pixelIndex>)` to get the colour for each pixel on the LED strip. This index is then used to set the correct values from an array of RGB colours. A similar approach is used with `.getPixelBrightness(<pixelIndex>)` to adjust the brightness of each pixel and add a faded tail effect to the pulse.
-        - **`PulseController`** manages the custom animation logic through the manipulation of two arrays - `leftToRightArray` and  `rightToLeftArray`. Both of these hold color and brightness values for each of the pixels on the strip. They represent animated pulses moving in opposite directions. Both arrays are treated identically for as long as possible.
-        
-            With each `.update()` their contents are moved one position to the right using `.animateArray()`.  
-            
-            Their starting pixels are then calculated based on the state of the user inputs with `.updateStartingPixel()`. This function continues to add to the length of the pulse if the button is held, adds a tail onto the end if the button is released, or simply adds a blank pixel if there is no tail left to draw.
+    - **`LEDS`** sends data to an LED strip and renders the animation based on the user inputs. Its associated data pin, colors, memory and animation style can be instantiated in the `.ino` file and passed as arguments to an `LEDS` object.
 
-            Finally, the index of the desired pixel colour is returned as `leftToRightArray[i][0] + rightToLeftArray[LEDCOUNT - i - 1][0]`. This line creates the overlapping effect and **_flips_** `rightToLeftArray` to create the contrary motion. The `LEDS` object can then use this value to index its array of given colours and set the pixel accordingly. 
+        The core animation logic is defined in an **`Animator`** parent class, and is extended as a **`PulseAnimator`** or a **`SpringAnimator`**. Their behavior is described in further detail below. The `.render()` method loops through each pixel, and uses the `Animator`'s `.getPixelColorIndex(<pixelIndex>)` to get the colour for each pixel on the LED strip. This index is then used to set the correct values from an array of RGB colours. A similar approach is used with `.getPixelBrightness(<pixelIndex>)` to allow for any fading effects that `Animator` may implement.
+
+        - **`PulseAnimator`** manages the animation for the original pulse effect on the Brainwave with a `leftToRightArray` and  `rightToLeftArray`. Both of these hold color and brightness values for each of the pixels on the strip. They represent animated pulses moving in opposite directions. 
+        - **`SpringAnimator`** is an optional animation mode for the Brainwave. It's based on [the Vector chapter in Daniel Shiffman's *The Nature of Code*](https://natureofcode.com/vectors/) - although our vector has been simplified down to 1 dimension from his 2D example. It creates two "springs" which overlap without colliding with each other.
 
 ## Libraries 
 
